@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rive 动画交互演示</title>
+    <style>
+        /* 
+           这里是网页的“装修”部分（CSS），控制页面的长相。
+           比如背景颜色、居中显示等。一般不需要修改。
+        */
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0; /* 背景颜色：浅灰色 */
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        
+        #canvas-container {
+            /* 这里的 width 和 height 控制动画显示的窗口大小 */
+            width: 500px;  /* 👉 宽度：500像素 */
+            height: 500px; /* 👉 高度：500像素 */
+            background: white;
+            border-radius: 12px; /* 圆角 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 阴影效果 */
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .tips {
+            margin-top: 20px;
+            color: #555;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+       👇 这里是网页的主要内容区域 
+    -->
+
+    <!-- 动画显示区域 -->
+    <div id="canvas-container">
+        <canvas id="riveCanvas"></canvas>
+    </div>
+
+
+    <!-- 
+       👇 核心功能区 
+       这里引入了 Rive 的官方工具库，不用改动。
+    -->
+    <script src="https://unpkg.com/@rive-app/canvas@2.21.4"></script>
+
+    <!-- 
+       👇 这里的代码控制动画的播放和交互 
+       请重点阅读这里的中文注释
+    -->
+    <script>
+        // 初始化 Rive 动画
+        const r = new rive.Rive({
+            // 👉 第一步：指定文件名
+            // 把 'test.riv' 改成你自己放在这个文件夹下的 .riv 文件名
+            src: 'test.riv',  
+            
+            // 指定画布元素（不需要改）
+            canvas: document.getElementById('riveCanvas'),
+            
+            // 自动播放（不需要改）
+            autoplay: true,
+            
+            // 👉 第二步：指定状态机名称 (非常重要！！！)
+            // 绝大多数交互失效，都是因为这个名字写错了。
+            // 1. 打开你的 Rive 设计软件。
+            // 2. 找到左下角的 "State Machine" (通常默认叫 State Machine 1)。
+            // 3. 把那个名字复制并替换掉下面的 "State Machine 1"。
+            stateMachines: "State Machine 1", 
+            
+            // 加载成功后的回调
+            onLoad: () => {
+                console.log('✅ 动画加载成功！');
+                r.resizeDrawingSurfaceToCanvas(); // 调整清晰度
+            },
+            
+            // 加载失败的回调
+            onError: (err) => {
+                console.error('❌ 出错了:', err);
+                alert("加载失败！\n1. 请检查文件名是否写对。\n2. 请按 F12 打开控制台查看具体错误。");
+            }
+        });
+
+        // 监听窗口大小变化，保持动画清晰（不需要改）
+        window.addEventListener('resize', () => {
+            r.resizeDrawingSurfaceToCanvas();
+        });
+    </script>
+</body>
+</html>
